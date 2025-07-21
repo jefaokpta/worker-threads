@@ -6,11 +6,11 @@
 import { Injectable } from '@nestjs/common';
 import { Worker } from 'node:worker_threads';
 import { spawnSync } from 'node:child_process';
-import { worker } from 'globals';
 
 @Injectable()
 export class HeavyWorkService {
   private worker: Worker;
+  private isWorkerBusy = false;
 
   constructor() {
     this.createWorker();
@@ -18,11 +18,14 @@ export class HeavyWorkService {
 
   private createWorker() {
     this.worker = new Worker('./dist/worker.js');
+    this.isWorkerBusy = false
     this.worker.on('message', (message) => {
-      console.log('message from worker:', message);
+      console.log(message);
+      this.isWorkerBusy = false
     })
     this.worker.on('error', (error) => {
       console.error('Worker error:', error);
+      this.isWorkerBusy = false
     });
     this.worker.on('exit', (code) => {
       console.log(`${code} - desligou worker, reiniciando...`);
@@ -37,6 +40,10 @@ export class HeavyWorkService {
   }
 
   heavyWorkRightWay() {
+    if (this.isWorkerBusy) {
+      throw new Error('Worker esta ocupado, tente novamente em alguns segundos');
+    }
+    this.isWorkerBusy = true;
     this.worker.postMessage('uniqueid');
   }
 

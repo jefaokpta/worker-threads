@@ -11,10 +11,8 @@ async function main(message: any) {
   const pid = process.pid;
   console.log(`Worker ${pid} Executando trabalho pesado`);
   spawnSync('sleep', ['10'], { shell: true });
-  console.log('Worker ${pid} terminou o trabalho pesado');
-
   // Send response back to main thread
-  parentPort?.postMessage(`Worker ${pid} mandando msg terminou: ${message}`);
+  parentPort?.postMessage(`Worker ${pid} terminou: ${message}`);
 }
 
 // Listen for messages from the main thread
