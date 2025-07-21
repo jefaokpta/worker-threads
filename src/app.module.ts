@@ -5,13 +5,15 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module';
 import { ApiModule } from './api/api.module';
 import { HeavyModule } from './heavy/heavy.module';
+import { KafkaConsumerModule } from './kafka-consumer/kafka-consumer.module';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     CronModule,
     ApiModule,
-    HeavyModule
+    HeavyModule,
+    KafkaConsumerModule
   ],
   controllers: [AppController],
   providers: [
